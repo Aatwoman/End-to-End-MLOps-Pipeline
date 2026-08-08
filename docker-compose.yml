@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  mlflow:
+    image: python:3.11-slim
+    working_dir: /mlflow
+    volumes:
+      - ./mlruns:/mlflow/mlruns
+    command: >
+      sh -c "pip install --no-cache-dir mlflow==2.15.1 &&
+             mlflow ui --host 0.0.0.0 --port 5000 --backend-store-uri /mlflow/mlruns"
+    ports:
+      - "5000:5000"
